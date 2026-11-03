@@ -13,6 +13,48 @@ class TestVarasto(unittest.TestCase):
     def test_uudella_varastolla_oikea_tilavuus(self):
         self.assertAlmostEqual(self.varasto.tilavuus, 10)
 
+    def test_negatiivinen_tilavuus(self):
+        self.varasto = Varasto(-10)
+        self.assertAlmostEqual(self.varasto.tilavuus, 0)
+
+    def test_negatiivinen_alkusaldo(self):
+        self.varasto = Varasto(10, -5)
+        self.assertAlmostEqual(self.varasto.saldo, 0)
+
+    def test_alkusaldo_yli_tilavuuden(self):
+        self.varasto = Varasto(10, 15)
+        self.assertAlmostEqual(self.varasto.saldo, 10)
+
+    def test_negatiivinen_lisays(self):
+        self.varasto.lisaa_varastoon(-2)
+        self.assertAlmostEqual(self.varasto.saldo, 0)
+
+    def test_otetaan_liikaa(self):
+        self.varasto = Varasto(10, 5)
+        tulos = self.varasto.ota_varastosta(8)
+        self.assertAlmostEqual(tulos, 5)
+        self.assertAlmostEqual(self.varasto.saldo, 0)
+
+    def test_lisays_joka_yli_tilavuuden(self):
+        self.varasto = Varasto(10, 5)
+        self.varasto.lisaa_varastoon(8)
+        self.assertAlmostEqual(self.varasto.saldo, 10)
+
+    def test_negatiivisen_maaran_ottaminen(self):
+        self.varasto.lisaa_varastoon(5)
+        saatu_maara = self.varasto.ota_varastosta(-2)
+
+        self.assertAlmostEqual(saatu_maara, 0.0)
+        self.assertAlmostEqual(self.varasto.saldo, 5)
+
+    def test_str_palauttaa_oikean_merkkijonon(self):
+        self.varasto.lisaa_varastoon(5)
+
+        self.assertEqual(
+            str(self.varasto),
+            "saldo = 5, vielä tilaa 5"
+        )
+
     def test_lisays_lisaa_saldoa(self):
         self.varasto.lisaa_varastoon(8)
 
